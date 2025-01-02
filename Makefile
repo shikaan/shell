@@ -1,5 +1,5 @@
 .POSIX:
-.PHONY: all clean
+.PHONY: all clean run
 
 CC 			= cc
 CFLAGS 	= -Wall -Wextra -Os
@@ -20,3 +20,6 @@ $(BUILD):
 
 clean:
 	rm -rf build
+
+run: shell
+	$(BUILD)/shell	
