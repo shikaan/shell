@@ -9,19 +9,15 @@ LDFLAGS =
 
 all: shell
 
-shell: sds.o builtin.o
+shell: sds.o $(BUILD)/builtin.o
 	$(CC) $(LDFLAGS) shell.c $(BUILD)/sds.o $(BUILD)/builtin.o $(LDLIBS) -o $(BUILD)/$@
-
-# Modules
-builtin.o: builtin.c builtin.h | $(BUILD)
-	$(CC) $(CFLAGS) -c builtin.c -o $(BUILD)/builtin.o
 
 # Dependencies
 sds.o: sds/sds.c sds/sds.h sds/sdsalloc.h | $(BUILD)
 	$(CC) $(CFLAGS) -c sds/sds.c -o $(BUILD)/sds.o
 
 # Test
-builtin.test: test.o sds.o builtin.o
+builtin.test: test.o sds.o $(BUILD)/builtin.o
 	$(CC) $(LDFLAGS) test/builtin.test.c $(BUILD)/test.o $(BUILD)/sds.o $(BUILD)/builtin.o $(LDLIBS) -o $(BUILD)/$@
 
 test.o: test/test.c test/test.h | $(BUILD)
@@ -30,6 +26,9 @@ test.o: test/test.c test/test.h | $(BUILD)
 # Utilities
 $(BUILD):
 	mkdir -p $(BUILD)
+
+$(BUILD)/%.o: %.c | $(BUILD)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Phony targets
 test: builtin.test
