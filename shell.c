@@ -1,10 +1,11 @@
+#include "builtin.h"
+#include "utils.h"
+
 #include "sds/sds.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-#define NAME "shell"
 
 sds read_line() {
   char c;
@@ -25,7 +26,8 @@ int launch(int argc, sds *argv) {
   const int is_error = pid < 0;
   const int is_child = pid == 0;
 
-  if (is_error) perror(NAME);
+  if (is_error)
+    perror(NAME);
 
   if (is_child) {
     // execvp expects a NULL terminated array
@@ -54,11 +56,20 @@ void loop(void) {
     printf("$ ");
     int argc = 0;
     sds line = read_line();
-    sds *args = sdssplitargs(line, &argc);
-    keep_going = launch(argc, args);
+    sds *argv = sdssplitargs(line, &argc);
+
+    if (argc != 0) {
+      Builtin b = builtin_from(argv[0]);
+
+      if (b == BUILTIN_UNDEFINED) {
+        keep_going = launch(argc, argv);
+      } else {
+        keep_going = builtin_launch(b, argc, argv);
+      }
+    }
 
     sdsfree(line);
-    sdsfreesplitres(args, argc);
+    sdsfreesplitres(argv, argc);
   } while (keep_going);
 }
 
