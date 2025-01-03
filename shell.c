@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#define NAME "shell"
+
 sds read_line() {
   char c;
   sds line = sdsempty();
@@ -16,20 +18,22 @@ sds read_line() {
   }
 }
 
-int launch(sds *args) {
+int launch(int argc, sds *argv) {
   pid_t pid;
 
   pid = fork();
   const int is_error = pid < 0;
   const int is_child = pid == 0;
 
-  if (is_error) {
-    perror("shell: fork error");
-  }
+  if (is_error) perror(NAME);
 
   if (is_child) {
-    execvp(args[0], args);
-    perror("shell: exec error");
+    // execvp expects a NULL terminated array
+    argv = sds_realloc(argv, sizeof(sds) * (argc + 1));
+    argv[argc] = NULL;
+    execvp(argv[0], argv);
+    // execvp only returns when there is an error
+    perror(NAME);
   }
 
   int should_wait = 1;
@@ -50,17 +54,11 @@ void loop(void) {
     printf("$ ");
     int argc = 0;
     sds line = read_line();
-    sds *sds_args = sdssplitargs(line, &argc);
+    sds *args = sdssplitargs(line, &argc);
+    keep_going = launch(argc, args);
+
     sdsfree(line);
-
-    char **args = malloc(sizeof(sds) * (argc + 1));
-    for (int i = 0; i < argc; i++) {
-      args[i] = sds_args[i];
-    }
-    args[argc] = NULL;
-
-    keep_going = launch(args);
-    sdsfreesplitres(sds_args, argc);
+    sdsfreesplitres(args, argc);
   } while (keep_going);
 }
 
