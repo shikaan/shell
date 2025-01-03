@@ -15,6 +15,12 @@ git submodule update --init
 
 Build
 
-```
+```sh
 make
+```
+
+Test
+
+```sh
+make test
 ```
