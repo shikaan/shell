@@ -15,6 +15,8 @@ shell: sds.o
 sds.o: sds/sds.c sds/sds.h sds/sdsalloc.h | $(BUILD)
 	$(CC) $(CFLAGS) -c sds/sds.c -o $(BUILD)/sds.o
 
+test.o: test/test.c test/test.h | $(BUILD)
+	$(CC) $(CFLAGS) -c test/test.c -o $(BUILD)/test.o
 $(BUILD):
 	mkdir -p $(BUILD)
 
