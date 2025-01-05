@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#define PROMPT "$ "
+
 sds read_line() {
   char c;
   sds line = sdsempty();
@@ -54,7 +56,7 @@ void loop(void) {
   int keep_going = 1;
 
   do {
-    printf("$ ");
+    printf(PROMPT);
     int argc = 0;
     sds line = read_line();
     sds *argv = sdssplitargs(line, &argc);
