@@ -41,42 +41,38 @@ int launch(int argc, sds *argv) {
     exit(EXIT_FAILURE);
   }
 
-  int should_wait = 1;
-  int status;
+  int should_wait = 1, status = 0;
   do {
     waitpid(pid, &status, WUNTRACED);
     // Wait for child until it exits or signals
     should_wait = !WIFEXITED(status) && !WIFSIGNALED(status);
   } while (should_wait);
 
-  return 1;
+  return status;
 }
 
-void loop(void) {
-  int keep_going = 1;
+int main(int argc, char **argv) {
+  int status = 0;
 
-  do {
+   while (1) {
     printf(PROMPT);
-    int argc = 0;
     sds line = read_line();
-    sds *argv = sdssplitargs(line, &argc);
 
+    int argc = 0;
+    sds *argv = sdssplitargs(line, &argc);
     if (argc != 0) {
       Builtin b = builtin_from(argv[0]);
 
       if (b == BUILTIN_UNDEFINED) {
-        keep_going = launch(argc, argv);
+        status = launch(argc, argv);
       } else {
-        keep_going = builtin_launch(b, argc, argv);
+        status = builtin_launch(b, argc, argv);
       }
     }
 
     sdsfree(line);
     sdsfreesplitres(argv, argc);
-  } while (keep_going);
-}
+  }
 
-int main(int argc, char **argv) {
-  loop();
-  return EXIT_SUCCESS;
+  return status;
 }

@@ -6,9 +6,8 @@ typedef enum {
   BUILTIN_UNDEFINED = -1
 } Builtin;
 
-// Returns a builtin from a raw string. It returns BUILTIN_UNDEFINED when none
-// is found.
+// Returns a builtin from a string or `BUILTIN_UNDEFINED` when none is found.
 Builtin builtin_from(sds raw);
 
-// Execute the builtin. Returns 0 when shell execution should stop
+// Executes a given builtin and returns its status code from execution
 int builtin_launch(Builtin builtin, int argc, sds *argv);

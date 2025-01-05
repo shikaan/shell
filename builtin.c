@@ -30,13 +30,15 @@ int builtin_cd(int argc, sds *argv) {
 
   if (chdir(argv[1]) != 0)
     perror(NAME);
-  return 1;
+  return 0;
 }
 
 int builtin_exit(int argc, sds *argv) {
   UNUSED(argc);
   UNUSED(argv);
-  return 0;
+
+  if (argc <= 1) exit(0);
+  exit(atoi(argv[1]));
 }
 
 Builtin builtin_from(const sds raw) {
@@ -61,6 +63,6 @@ int builtin_launch(Builtin builtin, int argc, sds *argv) {
   case BUILTIN_EXIT:
     return builtin_exit(argc, argv);
   default:
-    return -1;
+    return EXIT_FAILURE;
   }
 }
