@@ -9,8 +9,8 @@ LDFLAGS =
 
 all: shell
 
-shell: sds.o $(BUILD)/builtin.o
-	$(CC) $(LDFLAGS) shell.c $(BUILD)/sds.o $(BUILD)/builtin.o $(LDLIBS) -o $(BUILD)/$@
+shell: sds.o $(BUILD)/builtin.o $(BUILD)/process.o
+	$(CC) $(LDFLAGS) shell.c $(BUILD)/sds.o $(BUILD)/builtin.o $(BUILD)/process.o $(LDLIBS) -o $(BUILD)/$@
 
 # Dependencies
 sds.o: sds/sds.c sds/sds.h sds/sdsalloc.h | $(BUILD)
