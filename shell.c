@@ -36,6 +36,7 @@ int launch(int argc, sds *argv) {
     execvp(argv[0], argv);
     // execvp only returns when there is an error
     perror(NAME);
+    exit(EXIT_FAILURE);
   }
 
   int should_wait = 1;
