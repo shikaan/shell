@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 #define PROMPT "$ "
 
@@ -23,6 +24,7 @@ sds read_line() {
 }
 
 int main(int argc, char **argv) {
+  int out = STDOUT_FILENO;
   int status = 0;
 
    while (1) {
@@ -35,7 +37,7 @@ int main(int argc, char **argv) {
       Builtin b = builtin_from(argv[0]);
 
       if (b == BUILTIN_UNDEFINED) {
-        status = process_launch(argc, argv);
+        status = process_launch(argc, argv, out);
       } else {
         status = builtin_launch(b, argc, argv);
       }
