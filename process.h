@@ -1,3 +1,5 @@
+#pragma once
+
 #include "sds/sds.h"
 
 // Launches a process with given argc, argv (same as `main`) and
