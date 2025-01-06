@@ -24,3 +24,14 @@ Test
 ```sh
 make test
 ```
+
+## Missing features
+
+This shell is by no means complete nor totally usable. 
+
+There are some glaring holes and missing features such as:
+* no piping
+* only output redirection and only for stdout
+* no history
+* no templating nor subshell expansion with `$`
+* cannot navigate the prompt with arrow keys
