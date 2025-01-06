@@ -13,19 +13,19 @@ void expect(int condition, const char *name, const char *message) {
   printf("   ok  - %s\n", name);
 }
 
-void expect_true(int condition, char *name) {
+void expect_true(int condition, const char *name) {
   expect(condition, name, "Expected value to be true");
 }
 
-void expect_not_null(void *a, char *name) {
+void expect_not_null(void *a, const char *name) {
   expect(a != NULL, name, "Expected value not to be null");
 }
 
-void expect_null(void *a, char *name) {
+void expect_null(void *a, const char *name) {
   expect(a == NULL, name, "Expected value to be null");
 }
 
-void expect_eql_int(int a, int b, char *name) {
+void expect_eql_int(int a, int b, const char *name) {
   char msg[256];
   snprintf(msg, 256, "Expected %d to equal %d", a, b);
   expect(a == b, name, msg);
@@ -34,4 +34,8 @@ void expect_eql_int(int a, int b, char *name) {
 int report() {
   printf("\n%d assertions, %d failed\n", testCount, failedCount);
   return failedCount;
+}
+
+void suite(const char* name) {
+  printf("> %s\n\n", name);
 }
